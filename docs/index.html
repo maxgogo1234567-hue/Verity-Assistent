@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Верити — голосовой ассистент для Windows</title>
+<meta name="description" content="Верити — жёлтый шар-смайл, который живёт в твоём компьютере: слушает, отвечает и открывает что угодно. Офлайн, бесплатно, по-русски.">
+<meta property="og:title" content="Верити — голосовой ассистент для Windows">
+<meta property="og:image" content="assets/social_preview.png">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{--sky1:#62a0ff;--sky2:#bfe3ff;--yel:#ffcf1f;--yel2:#ffe066;--ink:#1a1300;--grass:#5ea332;--dirt:#86604a;--card:#fffbe8;--txt:#2a2008}
+@media (prefers-color-scheme:dark){:root{--sky1:#16204a;--sky2:#3a5a9a;--card:#2a2410;--txt:#fff3c4}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font:19px/1.55 "Pixelify Sans","Trebuchet MS",sans-serif;color:var(--txt);background:linear-gradient(var(--sky1),var(--sky2) 70vh,var(--sky2)) fixed;overflow-x:hidden}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+h1,h2,h3,.px{font-family:"Press Start 2P","Courier New",monospace;line-height:1.3}
+h2{font-size:clamp(18px,3.2vw,26px);margin:0 0 14px;color:#fff;text-shadow:3px 3px 0 #0006}
+.lead{color:#fff;text-shadow:2px 2px 0 #0005;max-width:640px}
+.cloud{position:fixed;left:-200px;top:0;width:160px;image-rendering:pixelated;opacity:.9;z-index:0;pointer-events:none;animation:drift linear infinite}
+@keyframes drift{to{transform:translateX(calc(100vw + 400px))}}
+.sun{position:fixed;right:5vw;top:26px;width:56px;height:56px;background:#fff5aa;box-shadow:inset 0 0 0 8px #fffbe0;z-index:0;animation:pulse 4s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:inset 0 0 0 8px #fffbe0,0 0 40px 10px #fff3a088}}
+header,main,footer{position:relative;z-index:1}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:center;padding:56px 0 30px}
+.wordmark{font-size:clamp(34px,8vw,76px);margin:0;color:var(--yel);text-shadow:5px 5px 0 #5a3d00,0 0 0 #000;letter-spacing:2px}
+.tagline{font-size:22px;color:#fff;text-shadow:2px 2px 0 #0006;margin:10px 0 2px}
+.hint,.done,.os-note{font-size:16px;color:#fff;text-shadow:1px 1px 0 #0006;max-width:520px}
+.hero-art{position:relative;text-align:center}
+.hero-art #hero{width:min(420px,90%);height:auto;cursor:pointer;animation:bob 2.4s ease-in-out infinite;filter:drop-shadow(0 18px 12px #0003);transition:transform .15s}
+.hero-art #hero:active{transform:scale(.92,1.08)}
+@keyframes bob{50%{transform:translateY(-18px) scale(1.02,.98)}}
+.hero-art .spark{position:absolute;width:26px;height:26px;image-rendering:pixelated;pointer-events:none;animation:tw 2s ease-in-out infinite}
+@keyframes tw{50%{transform:scale(.3) rotate(45deg);opacity:.2}}
+.ut{background:#000;border:5px solid #fff;color:#fff;font:20px/1.5 "Pixelify Sans",monospace;font-weight:700;padding:14px 18px;min-height:110px;margin:20px 0 14px;max-width:560px;position:relative;cursor:pointer}
+.ut small{position:absolute;right:10px;bottom:4px;color:#888;font-size:12px}
+.ut::after{content:"▼";position:absolute;right:14px;bottom:26px;font-size:12px;animation:bl 1s steps(2) infinite}
+@keyframes bl{50%{opacity:0}}
+.btn{font:14px "Press Start 2P",monospace;color:var(--ink);background:var(--yel);border:0;padding:16px 20px;cursor:pointer;box-shadow:inset -4px -4px 0 #c28a00,inset 4px 4px 0 #fff3a0,0 5px 0 #6b4a00;transition:transform .08s}
+.btn:hover{background:var(--yel2)}.btn:active{transform:translateY(4px);box-shadow:inset -4px -4px 0 #c28a00,inset 4px 4px 0 #fff3a0,0 1px 0 #6b4a00}
+.btn.big{font-size:16px;padding:20px 26px}
+.btn.snd{background:#8fd35c;box-shadow:inset -4px -4px 0 #4c8a25,inset 4px 4px 0 #d4f5b0,0 5px 0 #2d5413;font-size:11px;padding:12px 14px}
+.cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+section{padding:46px 0}
+.ground{background:url(assets/dirt.png) 0 0/64px;image-rendering:pixelated;border-top:0;position:relative}
+.ground::before{content:"";position:absolute;left:0;right:0;top:-32px;height:32px;background:url(assets/grass_side.png) 0 0/32px 32px repeat-x;image-rendering:pixelated}
+.ground h2,.ground .lead{color:#fff}
+.cmds{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px;margin:26px 0}
+.cmd{background:var(--card);border:4px solid #1a1300;box-shadow:6px 6px 0 #0007;padding:0;transition:transform .15s}
+.cmd:hover{transform:translate(-3px,-3px) rotate(-.6deg)}
+.cmd dt{font:12px "Press Start 2P",monospace;padding:12px 14px;color:#fff;background:url(assets/grass_top.png) 0 0/32px;image-rendering:pixelated;text-shadow:2px 2px 0 #0008}
+.cmd dd{margin:0;padding:12px 14px}.cmd p{margin:0 0 8px;font-size:17px}
+.say{font-weight:700;color:#7a4b00;background:#ffe9a3;display:inline-block;padding:2px 8px}
+.stone{background:url(assets/stone.png) 0 0/64px;image-rendering:pixelated}
+.stone h2{color:#fff}
+.steps{counter-reset:s;list-style:none;padding:0;display:grid;gap:16px}
+.steps li{background:var(--card);border:4px solid #1a1300;padding:14px 16px 14px 70px;position:relative;box-shadow:6px 6px 0 #0007}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:14px;top:14px;width:42px;height:42px;display:grid;place-items:center;font:16px "Press Start 2P";background:var(--yel);color:var(--ink);box-shadow:inset -3px -3px 0 #c28a00}
+.steps h3{font-size:13px;margin:2px 0 8px}.steps p{margin:6px 0}.small{font-size:15px;opacity:.85}
+code{background:#0002;padding:1px 6px}
+a{color:#1b5fd1}.stone a,.ground a{color:var(--yel2)}
+details{background:var(--card);border:4px solid #1a1300;padding:12px 16px;margin-top:18px}summary{cursor:pointer;font-weight:700}
+.look{display:grid;gap:22px}
+.shot img{width:100%;height:auto;border:5px solid #1a1300;image-rendering:auto;box-shadow:8px 8px 0 #0007}
+figcaption{color:#fff;margin-top:10px;text-shadow:1px 1px 0 #0006}
+.gifs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.gifs img{width:100%;height:auto;border:5px solid #1a1300;box-shadow:6px 6px 0 #0007;background:#000}
+.poses{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px}
+.poses img{width:100%;height:auto;transition:transform .2s;cursor:pointer;filter:drop-shadow(0 6px 4px #0003)}
+.poses img:hover{transform:translateY(-10px) rotate(6deg) scale(1.08)}
+footer{background:#14100a;color:#e9dfc0;padding:30px 0 90px;margin-top:0}
+footer a{color:var(--yel2);margin-right:16px}
+.made{font-family:"Press Start 2P";font-size:11px;color:var(--yel)}
+#buddy{position:fixed;left:-90px;bottom:6px;width:76px;height:76px;z-index:20;cursor:pointer;will-change:transform}
+#buddy img{width:100%;height:100%;transition:filter .2s}
+#bubble{position:fixed;z-index:21;background:#000;border:4px solid #fff;color:#fff;font:700 16px "Pixelify Sans",monospace;padding:8px 12px;max-width:260px;display:none}
+.reveal{opacity:0;transform:translateY(24px);transition:.6s}.reveal.in{opacity:1;transform:none}
+[hidden]{display:none!important}
+@media(max-width:760px){.hero{grid-template-columns:1fr;text-align:center}.cta{justify-content:center}.ut{margin-inline:auto}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="sun" aria-hidden="true"></div>
+<img class="cloud" src="assets/cloud.png" style="top:60px;animation-duration:90s" alt="">
+<img class="cloud" src="assets/cloud.png" style="top:150px;width:110px;animation-duration:120s;animation-delay:-50s" alt="">
+<img class="cloud" src="assets/cloud.png" style="top:30px;width:210px;animation-duration:150s;animation-delay:-100s" alt="">
+
+<header><div class="wrap hero">
+  <div>
+    <h1 class="wordmark">VERITY</h1>
+    <p class="tagline">голосовой ассистент для Windows</p>
+    <p class="hint px" style="font-size:11px">* офлайн, бесплатно, по-русски</p>
+    <div class="ut" id="ut" role="group" aria-label="Реплика Верити" title="Нажми — Верити скажет что-нибудь ещё"><span id="utt"></span><small>нажми, чтобы дальше</small></div>
+    <div class="cta">
+      <button class="btn big" type="button" data-install>Скачать Верити</button>
+      <button class="btn snd" type="button" id="snd" aria-pressed="false">Звук речи: выкл</button>
+    </div>
+    <p class="hint">Скачается ZIP-архив. Нужны Windows 10 или 11 и Python 3.13. Сначала запусти setup.bat, потом run.bat.</p>
+    <p class="done" id="done-hero" role="status" hidden>Архив скачан. Распакуй его и запусти setup.bat. Подробности в разделе «Установка».</p>
+    <p class="os-note" id="os-note" hidden>Верити работает только на Windows 10 и 11. Открой страницу на компьютере с Windows.</p>
+  </div>
+  <div class="hero-art">
+    <img id="hero" src="assets/verity.webp" width="900" height="900" alt="Верити: большой жёлтый шар-смайл с чёрными глазами-овалами и широкой улыбкой">
+    <img class="spark" src="assets/sparkle.png" style="left:6%;top:12%" alt="">
+    <img class="spark" src="assets/sparkle.png" style="right:8%;top:26%;animation-delay:.7s" alt="">
+    <img class="spark" src="assets/sparkle.png" style="left:14%;bottom:24%;animation-delay:1.3s" alt="">
+  </div>
+</div></header>
+
+<main>
+  <section class="ground" id="features"><div class="wrap">
+    <h2 class="reveal">Что она умеет</h2>
+    <p class="lead reveal">Скажи «Верити», затем команду. Она слушает микрофон, понимает русский и отвечает бипами, как в Undertale, а текст печатается в окошке.</p>
+    <dl class="cmds">
+      <div class="cmd reveal"><dt>Интернет</dt><dd><p>Открывает сайты, ищет в Google, картинки и информацию, пересказывает Википедию.</p><p class="say">Верити, открой ютуб</p></dd></div>
+      <div class="cmd reveal"><dt>YouTube</dt><dd><p>Сразу включает первое видео по запросу или ищет прямо на YouTube.</p></dd></div>
+      <div class="cmd reveal"><dt>Музыка и видео</dt><dd><p>Пауза, следующий трек, «что играет», перемотка на нужную минуту.</p><p class="say">Верити, поставь на 3:14</p></dd></div>
+      <div class="cmd reveal"><dt>Telegram</dt><dd><p>Находит чат, печатает сообщение и отправляет.</p><p class="say">Верити, открой телеграм, чат папа, напиши привет</p></dd></div>
+      <div class="cmd reveal"><dt>Программы и окна</dt><dd><p>Открывает и закрывает программы, сворачивает окна, прокручивает страницы.</p></dd></div>
+      <div class="cmd reveal"><dt>Клавиши</dt><dd><p>Нажимает сочетания клавиш по названию.</p><p class="say">Верити, нажми вин таб</p></dd></div>
+      <div class="cmd reveal"><dt>Файлы</dt><dd><p>Открывает папки и диски, создаёт папки, текстовые файлы, документы и таблицы.</p></dd></div>
+      <div class="cmd reveal"><dt>Компьютер</dt><dd><p>Громкость, яркость, диагностика ПК, скриншот, блокировка.</p><p class="say">Верити, что грузит компьютер</p></dd></div>
+      <div class="cmd reveal"><dt>Разговор</dt><dd><p>Локальная нейросеть с характером весёлого смайла. Без интернета и ключей.</p></dd></div>
+      <div class="cmd reveal"><dt>Сама по себе</dt><dd><p>Меняет позы, катится по панели задач, прыгает, пока отвечает, и иногда появляется сама.</p></dd></div>
+    </dl>
+  </div></section>
+
+  <section class="stone" id="install"><div class="wrap">
+    <h2 class="reveal">Установка</h2>
+    <ol class="steps">
+      <li class="reveal"><h3>Поставь Python 3.13</h3><p>Скачай <a href="https://www.python.org/ftp/python/3.13.17/python-3.13.17-amd64.exe">установщик для Windows (64-bit)</a>. Подойдут и 3.11–3.14.</p><p class="small">Поставь галочку «Add python.exe to PATH». Если Python уже есть, пропусти шаг.</p></li>
+      <li class="reveal"><h3>Скачай Верити</h3><p>Нажми кнопку, браузер сохранит ZIP.</p><button class="btn" type="button" data-install>Скачать Верити</button><p class="done" id="done-step" role="status" hidden>Архив скачан, ищи его в «Загрузках».</p></li>
+      <li class="reveal"><h3>Распакуй и запусти setup.bat</h3><p>Распакуй в папку, например <code>C:\Verity</code>, и запусти <code>setup.bat</code>. Дождись надписи «Готово».</p><p class="small">Если Windows пишет «защитила ваш компьютер», нажми «Подробнее», затем «Выполнить в любом случае». В пути лучше без русских букв.</p></li>
+      <li class="reveal"><h3>Запусти run.bat и скажи «Верити, открой ютуб»</h3><p>Верити прикатится, поздоровается, а в трее появится её значок. Разреши доступ к микрофону.</p></li>
+    </ol>
+    <details class="reveal"><summary>Как научить Верити болтать</summary><p>Нужна <a href="https://ollama.com/download" style="color:#1b5fd1">Ollama</a>, бесплатная программа, которая запускает нейросеть на твоём компьютере. Запусти <code>setup_ai.bat</code>, затем перезапусти Верити.</p></details>
+    <details class="reveal"><summary>Про звук речи</summary><p>Верити не синтезирует голос: на каждую букву она издаёт короткий «бип», как герои Undertale, а текст печатается в окошке. Высоту бипов меняет параметр <code>blip_pitch</code> в config.json.</p></details>
+  </div></section>
+
+  <section class="ground" id="look"><div class="wrap">
+    <h2 class="reveal">Как она выглядит</h2>
+    <p class="lead reveal">Живёт поверх окон, говорит в окошке как в Undertale и умеет катиться.</p>
+    <div class="look">
+      <figure class="shot reveal" style="margin:0"><img src="assets/screenshot.jpg" width="1331" height="449" loading="lazy" alt="Верити на рабочем столе: окошко «Слушаю…» над жёлтым шаром"><figcaption>Верити на рабочем столе.</figcaption></figure>
+      <div class="gifs">
+        <img class="reveal" src="assets/talk.gif" width="520" height="400" loading="lazy" alt="Верити говорит, текст печатается в чёрном окошке">
+        <img class="reveal" src="assets/wave.gif" width="360" height="400" loading="lazy" alt="Верити прыгает на траве">
+        <img class="reveal" src="assets/roll.gif" width="560" height="240" loading="lazy" alt="Верити катится по траве">
+      </div>
+      <h2 class="reveal" style="font-size:16px;margin-top:20px">Её настроения</h2>
+      <div class="poses reveal" id="poses">
+        <img src="assets/poses/verity.png" alt="Улыбается"><img src="assets/poses/verity_happy.png" alt="Радуется"><img src="assets/poses/verity_wink.png" alt="Подмигивает"><img src="assets/poses/verity_surprise.png" alt="Удивлена"><img src="assets/poses/verity_cheeky.png" alt="Озорничает"><img src="assets/poses/verity_sleepy.png" alt="Дремлет">
+      </div>
+    </div>
+  </div></section>
+</main>
+
+<footer><div class="wrap">
+  <p class="made">Made By: MaxGoGo</p>
+  <nav aria-label="Ссылки"><a data-link="repo" href="#">GitHub</a><a data-link="commands" href="#">Список команд</a><a data-link="license" href="#">Лицензия MIT</a></nav>
+  <small>Верити не связана с Microsoft, Google, Mojang и Anthropic. Названия принадлежат их владельцам. Minecraft и Undertale упомянуты только как визуальная отсылка.</small>
+</div></footer>
+
+<div id="buddy" title="Привет!"><img src="assets/poses/verity.png" alt="Маленькая Верити катается по странице"></div>
+<div id="bubble"></div>
+
+<script>
+(function(){"use strict";
+var PROJECT="maxgogo1234567-hue/VerityByMaxGoGo",BRANCH="main",repo="https://github.com/"+PROJECT;
+var links={repo:repo,zip:repo+"/releases/download/MaxGoGo/Verity-Assistent.zip",commands:repo+"/blob/"+BRANCH+"/"+encodeURIComponent("КОМАНДЫ.md"),license:repo+"/blob/"+BRANCH+"/LICENSE"};
+[].forEach.call(document.querySelectorAll("[data-link]"),function(a){a.href=links[a.getAttribute("data-link")]});
+function $(i){return document.getElementById(i)}
+var isWin=/Windows/i.test(navigator.userAgent);
+if(!isWin)$("os-note").hidden=false;
+[].forEach.call(document.querySelectorAll("[data-install]"),function(b){b.addEventListener("click",function(){
+  var a=document.createElement("a");a.href=links.zip;a.setAttribute("download","");document.body.appendChild(a);a.click();a.remove();
+  $("done-hero").hidden=false;$("done-step").hidden=false;say("Скачиваю! Распакуй и запусти setup.bat.")})});
+
+/* ---- звук речи: бипы как в Undertale (WebAudio, только на разговоре) ---- */
+var ctx=null,soundOn=false,SCALE=[0,2,4,7,9,12,14],n=0;
+function blip(ch,up){
+  if(!soundOn||!ctx)return;
+  n++;if(n%2===0)return;                         /* бип через букву */
+  var k=SCALE[(ch.toLowerCase().charCodeAt(0)*7+n)%7]+(up?5:0),f=560*Math.pow(2,k/12),t=ctx.currentTime;
+  var o=ctx.createOscillator(),g=ctx.createGain();
+  o.type="square";o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*.95,t+.058);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.09,t+.004);g.gain.exponentialRampToValueAtTime(.0008,t+.06);
+  o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+.07)}
+$("snd").addEventListener("click",function(){
+  soundOn=!soundOn;
+  if(soundOn&&!ctx){var C=window.AudioContext||window.webkitAudioContext;if(C)ctx=new C()}
+  if(ctx&&ctx.state==="suspended")ctx.resume();
+  this.textContent="Звук речи: "+(soundOn?"вкл":"выкл");this.setAttribute("aria-pressed",soundOn);
+  if(soundOn)say("Бип-бип! Слышишь? Это я.")});
+
+/* ---- печатающийся текст ---- */
+var PAUSE={",":120,";":140,":":140,".":260,"!":260,"?":280,"…":300},timer=null;
+function type(el,text,after){
+  clearTimeout(timer);el.textContent="";var i=0,full="* "+text;
+  (function step(){
+    if(i>=full.length){if(after)after();return}
+    var ch=full[i++];el.textContent=full.slice(0,i);
+    if(/[\wА-Яа-яЁё]/.test(ch))blip(ch,/\?\s*$/.test(full)&&i>full.length-4);
+    timer=setTimeout(step,66+(PAUSE[ch]||0))})()}
+var LINES=["Привет! Я Верити. Я живу в твоём компьютере и всегда улыбаюсь.","Скажи «Верити, открой ютуб», и я сразу открою.","Я умею катиться. Смотри, как я качусь по странице!","Я работаю офлайн. Никакой слежки, только бипы.","Трава тут из кубов. Я проверила: она не кусается.","Хочешь, чтобы я была писклявее? Правь blip_pitch в config.json.","Тебе скучно? Нажми на меня ещё раз."];
+var li=0;
+function say(t){type($("utt"),t)}
+function next(){say(LINES[li++%LINES.length])}
+$("ut").addEventListener("click",next);
+$("hero").addEventListener("click",next);
+setTimeout(next,500);
+
+/* ---- маленькая Верити катается по низу страницы ---- */
+var buddy=$("buddy"),bub=$("bubble"),bx=-90,dir=1,rot=0,talk=0,speed=2.2,pos=0;
+var B=["Бип!","Катюсь!","Эй, я здесь!","Тут трава…","Тише едешь, круглее будешь.","Ты прекрасно выглядишь!"];
+function bubbleAt(t){
+  bub.style.display="block";bub.textContent="* "+t;
+  bub.style.left=Math.max(8,Math.min(innerWidth-bub.offsetWidth-8,bx-20))+"px";bub.style.bottom="92px";
+  [].forEach.call(t,function(ch,i){setTimeout(function(){if(/[\wА-Яа-яЁё]/.test(ch))blip(ch,false)},i*66)});
+  clearTimeout(bub._t);bub._t=setTimeout(function(){bub.style.display="none"},2200+t.length*66)}
+buddy.addEventListener("click",function(){speed=7;setTimeout(function(){speed=2.2},900);bubbleAt(B[Math.random()*B.length|0])});
+var last=0;
+function loop(ts){
+  var dt=Math.min(40,ts-last)/16;last=ts;
+  bx+=dir*speed*dt;rot+=dir*speed*dt/38*57.3;
+  if(bx>innerWidth+10)dir=-1;if(bx<-90)dir=1;
+  var hop=Math.abs(Math.sin(ts/230))*(speed>5?14:5);
+  buddy.style.transform="translate("+bx+"px,"+(-hop)+"px) rotate("+rot+"deg)";
+  requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+setTimeout(function(){bubbleAt("Привет! Я маленькая Верити.")},3500);
+
+/* ---- появление при прокрутке ---- */
+if("IntersectionObserver"in window){
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.12});
+  [].forEach.call(document.querySelectorAll(".reveal"),function(el){io.observe(el)})
+}else[].forEach.call(document.querySelectorAll(".reveal"),function(el){el.classList.add("in")});
+/* ---- позы: клик — реплика ---- */
+var PS=["Я улыбаюсь. Как всегда.","Ура!","Подмигиваю тебе.","Ой!","Ничего не замышляю.","Ззз… нет, я не сплю."];
+[].forEach.call(document.querySelectorAll("#poses img"),function(im,i){im.addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"});say(PS[i%PS.length])})});
+})();
+</script>
+</body>
+</html>
